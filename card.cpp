@@ -74,6 +74,7 @@ Card::Card( QWidget* parent ) : QMainWindow( parent )
     auto customText = new QLineEdit;
     layoutCustom->addWidget( customText );
     grid->addLayout( layoutCustom, 4, 4 );
+    optionCustom->setFocusProxy( customText );
 
     auto centralWidget = new QWidget;
     centralWidget->setLayout( grid );
