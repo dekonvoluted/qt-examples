@@ -8,42 +8,40 @@
 
 Card::Card( QWidget* parent ) : QMainWindow( parent )
 {
-    // Create the layout first
-    auto grid = new QGridLayout();
+    // Create the top-level grid first
+    auto vLayout = new QVBoxLayout;
 
-    // Global disabler of all other options
-    auto indentWhatThe = new QHBoxLayout;
-    auto indentWhatTheSpacer = new QSpacerItem( 20, 20, QSizePolicy::Fixed, QSizePolicy::Fixed );
-    indentWhatThe->addSpacerItem( indentWhatTheSpacer );
-    indentWhatThe->addWidget( optionWhatThe );
+    // Create the global switch
     auto optionWhatThe = new QCheckBox( "What The" );
+    vLayout->addWidget( optionWhatThe );
 
-    grid->addLayout( indentWhatThe, 0, 0, 1, -1 );
+    // Create the main text
+    auto text = new QLabel( "FUCK" );
+    vLayout->addWidget( text, 0, Qt::AlignCenter );
 
-    // Main text
-    auto text = new QLabel( "F U C K" );
-    grid->addWidget( text, 1, 0, 1, -1, Qt::AlignCenter );
+    // Create a grid for the rest of the buttons
+    auto grid = new QGridLayout;
 
-    // Rest of the buttons
-    grid->addWidget( optionMe, 2, 0 );
+    // Create non-nested buttons
     auto optionMe = new QCheckBox( "Me" );
+    grid->addWidget( optionMe, 1, 0 );
 
     auto optionThat = new QCheckBox( "That" );
-    grid->addWidget( optionThat, 2, 2 );
+    grid->addWidget( optionThat, 1, 1 );
 
     auto optionThis = new QCheckBox( "This" );
-    grid->addWidget( optionThis, 2, 4 );
+    grid->addWidget( optionThis, 1, 2 );
 
     auto optionYes = new QCheckBox( "Yes" );
-    grid->addWidget( optionYes, 3, 0 );
+    grid->addWidget( optionYes, 2, 0 );
 
     auto optionIt = new QCheckBox( "It" );
-    grid->addWidget( optionIt, 3, 2 );
+    grid->addWidget( optionIt, 2, 1 );
 
     auto optionTheMan = new QCheckBox( "The Man" );
-    grid->addWidget( optionTheMan, 3, 4 );
+    grid->addWidget( optionTheMan, 2, 2 );
 
-    // Option with indented sub-option
+    // Create nested options
     auto layoutOff = new QVBoxLayout;
     auto optionOff = new QCheckBox( "Off" );
     layoutOff->addWidget( optionOff );
@@ -53,7 +51,11 @@ Card::Card( QWidget* parent ) : QMainWindow( parent )
     auto optionAndDie = new QCheckBox( "And Die" );
     indentOff->addWidget( optionAndDie );
     layoutOff->addLayout( indentOff );
-    grid->addLayout( layoutOff, 4, 0 );
+    grid->addLayout( layoutOff, 3, 0 );
+
+    // Suboption is disabled until parent option is enabled
+    connect( optionOff, &QCheckBox::toggled, optionAndDie, &QCheckBox::setEnabled );
+    optionAndDie->setEnabled( false );
 
     // Option with indented sub-option
     auto layoutYou = new QVBoxLayout;
@@ -65,19 +67,35 @@ Card::Card( QWidget* parent ) : QMainWindow( parent )
     auto optionAndTheHorse = new QCheckBox( "And The Horse You Rode In On" );
     indentYou->addWidget( optionAndTheHorse );
     layoutYou->addLayout( indentYou );
-    grid->addLayout( layoutYou, 4, 2 );
+    grid->addLayout( layoutYou, 3, 1 );
+
+    // Suboption is disabled until parent option is enabled
+    connect( optionYou, &QCheckBox::toggled, optionAndTheHorse, &QCheckBox::setEnabled );
+    optionAndTheHorse->setEnabled( false );
 
     // Custom option
     auto layoutCustom = new QHBoxLayout;
     auto optionCustom = new QCheckBox;
     layoutCustom->addWidget( optionCustom );
-    auto customText = new QLineEdit;
+    auto customText = new QLineEdit( "Everything" );
     layoutCustom->addWidget( customText );
-    grid->addLayout( layoutCustom, 4, 4 );
+    grid->addLayout( layoutCustom, 3, 2 );
+
+    // Suboption is disabled until parent option is enabled
+    connect( optionCustom, &QCheckBox::toggled, customText, &QLineEdit::setEnabled );
+    customText->setEnabled( false );
     optionCustom->setFocusProxy( customText );
 
+    // Put it all together
+    auto optionsWidget = new QWidget;
+    optionsWidget->setLayout( grid );
+    vLayout->addWidget( optionsWidget );
+
+    connect( optionWhatThe, &QCheckBox::toggled, optionsWidget, &QWidget::setDisabled );
+
+    // Put it all together
     auto centralWidget = new QWidget;
-    centralWidget->setLayout( grid );
+    centralWidget->setLayout( vLayout );
 
     this->setCentralWidget( centralWidget );
 }
