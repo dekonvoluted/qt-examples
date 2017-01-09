@@ -1,9 +1,14 @@
 #include <QApplication>
 
+#include "card.h"
+
 int main( int argc, char** argv )
 {
     QApplication app( argc, argv );
 
-    return app.exec()
+    auto card = new Card();
+    card->show();
+
+    return app.exec();
 }
 

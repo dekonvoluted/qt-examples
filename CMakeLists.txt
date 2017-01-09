@@ -4,7 +4,7 @@ project( main )
 
 find_package( Qt5Widgets REQUIRED )
 
-set( main_SOURCES main.cpp )
+set( main_SOURCES main.cpp card.cpp )
 
 add_executable( main ${main_SOURCES} )
 
